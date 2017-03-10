@@ -11,13 +11,13 @@ def get_files(client, task_id=None, list_id=None):
 		data["list_id"] = list_id
 
 	response = client.authenticated_request(client.api.Endpoints.FILES, data=data)
-	return response.json()
+	return response.status_code, response.json()
 
 def get_file(client, file_id):
 	'''Get a specific File'''
 	endpoint = '/'.join([client.api.Endpoints.FILES, str(file_id)])
     response = client.authenticated_request(endpoint)
-    return response.json()
+    return response.status_code, response.json()
 
 def create_file(client, upload_id, task_id, local_created_at=None):
 	'''
@@ -32,7 +32,7 @@ def create_file(client, upload_id, task_id, local_created_at=None):
 	if local_created_at is not None:
 		data["local_created_at"] = local_created_at
 	response = client.authenticated_request(client.api.Endpoints.FILES, method="POST", data=data)
-	return response.json()
+	return response.status_code, response.json()
 
 def destroy_file(client, file_id, revision):
 	'''Destroy a File'''
@@ -40,4 +40,5 @@ def destroy_file(client, file_id, revision):
             'revision' : int(revision),
             }
 	endpoint = '/'.join([client.api.Endpoints.FILES, str(file_id)])
-    client.authenticated_request(endpoint, 'DELETE', params=params)
+    response = client.authenticated_request(endpoint, 'DELETE', params=params)
+    return response.status_code

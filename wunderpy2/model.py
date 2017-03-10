@@ -42,6 +42,15 @@ class Subtask(_WunderlistEntity):
     COMPLETED = 'completed'
     TYPE = 'type'
 
+class Membership(_WunderlistObj):
+    ''' POJO Containing membership JSON keys '''
+    USER_ID = "user_id"
+    LIST_ID = "list_id"
+    STATE = "state"
+    TYPE = "type" # Always 'membership'?
+    OWNER = "owner" # boolean
+    MUTED = "muted" #boolean
+
 # NOTE Wunderlist automatically creates positions objects, so they don't have creation information
 class _PositionsObj(_WunderlistObj):
     VALUES = 'values'

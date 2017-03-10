@@ -15,20 +15,28 @@ def _check_date_format(date, api):
     except ValueError:
         raise ValueError("Date '{}' does not conform to API format: {}".format(date, api.DATE_FORMAT))
 
-def get_tasks(client, list_id, completed=False):
+def get_tasks(client, list_id):
+    '''Get tasks for the given list ID'''
+    params = {
+        'list_id': str(list_id),
+    }
+    response = client.authenticated_request(client.api.Endpoints.TASKS, params=params)
+    return response.status_code, response.json()
+
+def get_completed_tasks(client, list_id, completed=False):
     ''' Gets un/completed tasks for the given list ID '''
     params = { 
             'list_id' : str(list_id), 
             'completed' : completed 
             }
     response = client.authenticated_request(client.api.Endpoints.TASKS, params=params)
-    return response.json()
+    return response.status_code, response.json()
 
 def get_task(client, task_id):
     ''' Gets task information for the given ID '''
     endpoint = '/'.join([client.api.Endpoints.TASKS, str(task_id)])
     response = client.authenticated_request(endpoint)
-    return response.json()
+    return response.status_code, response.json()
 
 def create_task(client, list_id, title, assignee_id=None, completed=None, recurrence_type=None, recurrence_count=None, due_date=None, starred=None):
     ''' 
@@ -53,7 +61,7 @@ def create_task(client, list_id, title, assignee_id=None, completed=None, recurr
             }
     data = { key: value for key, value in data.iteritems() if value is not None }
     response = client.authenticated_request(client.api.Endpoints.TASKS, 'POST', data=data)
-    return response.json()
+    return response.status_code, response.json()
 
 def update_task(client, task_id, revision, title=None, assignee_id=None, completed=None, recurrence_type=None, recurrence_count=None, due_date=None, starred=None, remove=None):
     '''
@@ -81,11 +89,12 @@ def update_task(client, task_id, revision, title=None, assignee_id=None, complet
     data = { key: value for key, value in data.iteritems() if value is not None }
     endpoint = '/'.join([client.api.Endpoints.TASKS, str(task_id)])
     response = client.authenticated_request(endpoint, 'PATCH', data=data)
-    return response.json()
+    return response.status_code, response.json()
 
 def delete_task(client, task_id, revision):
     params = {
             'revision' : int(revision),
             }
     endpoint = '/'.join([client.api.Endpoints.TASKS, str(task_id)])
-    client.authenticated_request(endpoint, 'DELETE', params=params)
+    response = client.authenticated_request(endpoint, 'DELETE', params=params)
+    return response.status_code

@@ -7,7 +7,7 @@ def get_task_notes(client, task_id):
             }
     response = client.authenticated_request(client.api.Endpoints.NOTES, params=params)
     assert response.status_code == 200
-    return response.json()
+    return response.status_code, response.json()
 
 def get_list_notes(client, list_id):
     params = {
@@ -15,12 +15,12 @@ def get_list_notes(client, list_id):
             }
     response = client.authenticated_request(client.api.Endpoints.NOTES, params=params)
     assert response.status_code == 200
-    return response.json()
+    return response.status_code, response.json()
 
 def get_note(client, note_id):
     endpoint = '/'.join([client.api.Endpoints.NOTES, str(note_id)])
     response = client.authenticated_request(endpoint)
-    return response.json()
+    return response.status_code, response.json()
 
 def create_note(client, task_id, content):
     data = {
@@ -28,7 +28,7 @@ def create_note(client, task_id, content):
             'content' : content,
             }
     response = client.authenticated_request(client.api.Endpoints.NOTES, method='POST', data=data)
-    return response.json()
+    return response.status_code, response.json()
 
 def update_note(client, note_id, revision, content):
     data = {
@@ -37,7 +37,7 @@ def update_note(client, note_id, revision, content):
             }
     endpoint = '/'.join([client.api.Endpoints.NOTES, str(note_id)])
     response = client.authenticated_request(endpoint, method='PATCH', data=data)
-    return response.json()
+    return response.status_code, response.json()
 
 def delete_note(client, note_id, revision):
     # NOTE There is a bug in the Wunderlist API where this must be called twice in order for the note to actually be deleted - once on the note you want deleted and once on the new, empty, replacement note that gets generated
@@ -46,3 +46,4 @@ def delete_note(client, note_id, revision):
             }
     endpoint = '/'.join([client.api.Endpoints.NOTES, str(note_id)])
     response = client.authenticated_request(endpoint, method='DELETE', params=params)
+    return response.status_code

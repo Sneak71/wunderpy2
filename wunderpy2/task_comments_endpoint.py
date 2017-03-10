@@ -11,13 +11,13 @@ def get_comments(client, task_id=None, list_id=None):
 		data["list_id"] = list_id
 
 	response = client.authenticated_request(client.api.Endpoints.TASK_COMMENTS, data=data)
-	return response.json()
+	return response.status_code, response.json()
 
 def get_comment(client, comment_id):
 	'''Get a specific Comment'''
 	endpoint = '/'.join([client.api.Endpoints.TASK_COMMENTS, str(comment_id)])
     response = client.authenticated_request(endpoint)
-    return response.json()
+    return response.status_code, response.json()
 
 def create_comment(client, task_id, text):
 	'''
@@ -30,4 +30,4 @@ def create_comment(client, task_id, text):
 		"text": text
 	}
 	response = client.authenticated_request(client.api.Endpoints.TASK_COMMENTS, method="POST", data=data)
-	return response.json()
+	return response.status_code, response.json()

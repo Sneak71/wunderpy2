@@ -9,13 +9,13 @@ def _check_title_length(title, api):
 def get_lists(client):
     ''' Gets all the client's lists '''
     response = client.authenticated_request(client.api.Endpoints.LISTS)
-    return response.json()
+    return response.status_code, response.json()
 
 def get_list(client, list_id):
     ''' Gets the given list '''
     endpoint = '/'.join([client.api.Endpoints.LISTS, str(list_id)])
     response = client.authenticated_request(endpoint)
-    return response.json()
+    return response.status_code, response.json()
 
 def create_list(client, title):
     ''' Creates a new list with the given title '''
@@ -24,7 +24,7 @@ def create_list(client, title):
             'title' : title,
             }
     response = client.authenticated_request(client.api.Endpoints.LISTS, method='POST', data=data)
-    return response.json()
+    return response.status_code, response.json()
 
 def update_list(client, list_id, revision, title=None, public=None):
     '''
@@ -42,12 +42,12 @@ def update_list(client, list_id, revision, title=None, public=None):
     data = { key: value for key, value in data.iteritems() if value is not None }
     endpoint = '/'.join([client.api.Endpoints.LISTS, str(list_id)])
     response = client.authenticated_request(endpoint, 'PATCH', data=data)
-    return response.json()
+    return response.status_code, response.json()
 
 def delete_list(client, list_id, revision):
     params = {
             'revision' : int(revision),
             }
     endpoint = '/'.join([client.api.Endpoints.LISTS, str(list_id)])
-    client.authenticated_request(endpoint, 'DELETE', params=params)
-
+    response = client.authenticated_request(endpoint, 'DELETE', params=params)
+    return response.status_code

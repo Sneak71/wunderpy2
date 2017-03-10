@@ -10,6 +10,7 @@ from . import notes_endpoint
 from . import subtasks_endpoint
 from . import positions_endpoints
 from . import user_endpoint
+from . import root_endpoint
 
 class WunderClient(object):
     # TODO Factor our these methods into subclasses, for easier logical organization
@@ -70,9 +71,13 @@ class WunderClient(object):
         ''' Deletes the list with the given ID '''
         lists_endpoint.delete_list(self, list_id, revision)
 
-    def get_tasks(self, list_id, completed=False):
+    def get_tasks(self, list_id):
+        ''' Gets tasks for the list with the given ID '''
+        return tasks_endpoint.get_tasks(self, list_id)
+
+    def get_completed_tasks(self, list_id, completed=False):
         ''' Gets tasks for the list with the given ID, filtered by the given completion flag '''
-        return tasks_endpoint.get_tasks(self, list_id, completed=completed)
+        return tasks_endpoint.get_completed_tasks(self, list_id, completed=completed)
 
     def get_task(self, task_id):
         ''' Gets information about the task with the given ID '''
@@ -282,3 +287,9 @@ class WunderClient(object):
         Gets information about the note with the given ID
         '''
         return user_endpoint.get_user(self)
+
+    def get_root(self):
+        '''
+        Fetch the Root for the current User
+        '''
+        return root_endpoint.get_root(self)

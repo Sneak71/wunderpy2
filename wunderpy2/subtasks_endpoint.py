@@ -14,7 +14,7 @@ def get_task_subtasks(client, task_id, completed=False):
             'completed' : completed,
             }
     response = client.authenticated_request(client.api.Endpoints.SUBTASKS, params=params)
-    return response.json()
+    return response.status_code, response.json()
 
 def get_list_subtasks(client, list_id, completed=False):
     ''' Gets subtasks for the list with given ID '''
@@ -23,13 +23,13 @@ def get_list_subtasks(client, list_id, completed=False):
             'completed' : completed,
             }
     response = client.authenticated_request(client.api.Endpoints.SUBTASKS, params=params)
-    return response.json()
+    return response.status_code, response.json()
 
 def get_subtask(client, subtask_id):
     ''' Gets the subtask with the given ID '''
     endpoint = '/'.join([client.api.Endpoints.SUBTASKS, str(subtask_id)])
     response = client.authenticated_request(endpoint)
-    return response.json()
+    return response.status_code, response.json()
 
 def create_subtask(client, task_id, title, completed=False):
     ''' Creates a subtask with the given title under the task with the given ID '''
@@ -41,7 +41,7 @@ def create_subtask(client, task_id, title, completed=False):
             }
     data = { key: value for key, value in data.iteritems() if value is not None }
     response = client.authenticated_request(client.api.Endpoints.SUBTASKS, 'POST', data=data)
-    return response.json()
+    return response.status_code, response.json()
 
 def update_subtask(client, subtask_id, revision, title=None, completed=None):
     '''
@@ -59,7 +59,7 @@ def update_subtask(client, subtask_id, revision, title=None, completed=None):
     data = { key: value for key, value in data.iteritems() if value is not None }
     endpoint = '/'.join([client.api.Endpoints.SUBTASKS, str(subtask_id)])
     response = client.authenticated_request(endpoint, 'PATCH', data=data)
-    return response.json()
+    return response.status_code, response.json()
 
 def delete_subtask(client, subtask_id, revision):
     ''' Deletes the subtask with the given ID provided the given revision equals the revision the server has '''
@@ -67,4 +67,5 @@ def delete_subtask(client, subtask_id, revision):
             'revision' : int(revision),
             }
     endpoint = '/'.join([client.api.Endpoints.SUBTASKS, str(subtask_id)])
-    client.authenticated_request(endpoint, 'DELETE', params=params)
+    response = client.authenticated_request(endpoint, 'DELETE', params=params)
+    return response.status_code

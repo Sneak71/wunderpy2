@@ -22,7 +22,8 @@ def get_list_positions_objs(client):
     Return:
     A list containing a single ListPositionsObj-mapped object
     '''
-    return client.authenticated_request(client.api.Endpoints.LIST_POSITIONS).json()
+    response = client.authenticated_request(client.api.Endpoints.LIST_POSITIONS).json()
+    return response.status_code, response.json()
 
 def get_list_positions_obj(client, positions_obj_id):
     '''
@@ -33,7 +34,8 @@ def get_list_positions_obj(client, positions_obj_id):
     Return:
     A ListPositionsObj-mapped object defining the order of list layout
     '''
-    return endpoint_helpers.get_endpoint_obj(client, client.api.Endpoints.LIST_POSITIONS, positions_obj_id)
+    response = endpoint_helpers.get_endpoint_obj(client, client.api.Endpoints.LIST_POSITIONS, positions_obj_id)
+    return response.status_code, response.json()
 
 # TODO Is user_id the right value????
 def update_list_positions_obj(client, positions_obj_id, revision, values):
@@ -45,7 +47,8 @@ def update_list_positions_obj(client, positions_obj_id, revision, values):
     Return:
     The updated ListPositionsObj-mapped object defining the order of list layout
     '''
-    return _update_positions_obj(client, client.api.Endpoints.LIST_POSITIONS, positions_obj_id, revision, values)
+    response = _update_positions_obj(client, client.api.Endpoints.LIST_POSITIONS, positions_obj_id, revision, values)
+    return response.status_code, response.json()
 
 def get_task_positions_objs(client, list_id):
     '''
@@ -60,13 +63,15 @@ def get_task_positions_objs(client, list_id):
             'list_id' : int(list_id)
             }
     response = client.authenticated_request(client.api.Endpoints.TASK_POSITIONS, params=params)
-    return response.json()
+    return response.status_code, response.json()
 
 def get_task_positions_obj(client, positions_obj_id):
-    return endpoint_helpers.get_endpoint_obj(client, client.api.Endpoints.TASK_POSITIONS, positions_obj_id)
+    response = endpoint_helpers.get_endpoint_obj(client, client.api.Endpoints.TASK_POSITIONS, positions_obj_id)
+    return response.status_code, response.json()
 
 def update_task_positions_obj(client, positions_obj_id, revision, values):
-    return _update_positions_obj(client, client.api.Endpoints.TASK_POSITIONS, positions_obj_id, revision, values)
+    response = _update_positions_obj(client, client.api.Endpoints.TASK_POSITIONS, positions_obj_id, revision, values)
+    return response.status_code, response.json()
 
 def get_task_subtask_positions_objs(client, task_id):
     '''
@@ -78,7 +83,7 @@ def get_task_subtask_positions_objs(client, task_id):
             'task_id' : int(task_id)
             }
     response = client.authenticated_request(client.api.Endpoints.SUBTASK_POSITIONS, params=params)
-    return response.json()
+    return response.status_code, response.json()
 
 # NOTE Lists don't have subtasks; this is just a convenience method to see all the subtask positions objects for all the tasks in a list
 def get_list_subtask_positions_objs(client, list_id):
@@ -92,12 +97,14 @@ def get_list_subtask_positions_objs(client, list_id):
             'list_id' : int(list_id)
             }
     response = client.authenticated_request(client.api.Endpoints.SUBTASK_POSITIONS, params=params)
-    return response.json()
+    return response.status_code, response.json()
 
 def get_subtask_positions_obj(client, positions_obj_id):
-    return endpoint_helpers.get_endpoint_obj(client, client.api.Endpoints.SUBTASK_POSITIONS, positions_obj_id)
+    response = endpoint_helpers.get_endpoint_obj(client, client.api.Endpoints.SUBTASK_POSITIONS, positions_obj_id)
+    return response.status_code, response.json()
 
 def update_subtask_positions_obj(client, positions_obj_id, revision, values):
-    return _update_positions_obj(client, client.api.Endpoints.SUBTASK_POSITIONS, positions_obj_id, revision, values)
+    response = _update_positions_obj(client, client.api.Endpoints.SUBTASK_POSITIONS, positions_obj_id, revision, values)
+    return response.status_code, response.json()
     
 

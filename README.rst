@@ -49,6 +49,14 @@ Shuffling the order of tasks within a list (see `the Positions endpoint document
     random.shuffle(ordering)
     client.update_task_positions_obj(task_positions_obj[wunderpy2.TaskPositionsObj.ID], task_positions_obj[wunderpy2.TaskPositionsObj.REVISION], ordering)
 
+DONE
+====
+* Endpoint implementation:
+    * List
+    * User
+    * Root
+    
+
 TODO 
 ====
 * Endpoint implementation:

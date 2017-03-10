@@ -20,7 +20,7 @@ class TestListsEndpoint(EndpointTestCase):
         #  which sucks worse.
         for list_id in self._list_ids_to_cleanup:
             try:
-                list_obj = self.client.get_list(list_id)
+                _, list_obj = self.client.get_list(list_id)
                 revision = list_obj[wunderpy2.model.List.REVISION]
                 self.client.delete_list(list_id, revision)
             except ValueError:
@@ -32,24 +32,27 @@ class TestListsEndpoint(EndpointTestCase):
         random_title = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(10))
         # TODO It's not ideal that this depends on the 'create_list' function which is getting testsed, but the alternative is to re-implement list-creating logic,
         #  which is very fragile in case any of the Wunderlist stuff changes
-        new_list = self.client.create_list(random_title)
+        code, new_list = self.client.create_list(random_title)
+        assert code == 201
         self._list_ids_to_cleanup.add(new_list[wunderpy2.model.List.ID])
         return new_list
 
     def test_get_lists(self):
         ''' Test basic all lists retrieval '''
-        self.client.get_lists()
+        code, _ = self.client.get_lists()
+        self.assertEqual(code, 200)
 
     def test_get_list(self):
         ''' Test getting of a specific list '''
         new_list = self._get_test_list()
         new_list_id = new_list[wunderpy2.model.List.ID]
-        retrieved_list = self.client.get_list(new_list_id)
+        code, retrieved_list = self.client.get_list(new_list_id)
         self.assertDictEqual(new_list, retrieved_list)
 
     def test_create_list(self):
         ''' Test list creation '''
-        new_list = self.client.create_list("PLZ_DELETE")
+        code, new_list = self.client.create_list("PLZ_DELETE")
+        self.assertEqual(code, 201)
         self._list_ids_to_cleanup.add(new_list[wunderpy2.model.List.ID])
 
     def test_update_list(self):
@@ -61,7 +64,8 @@ class TestListsEndpoint(EndpointTestCase):
 
         updated_title = "DELETEME!"
         updated_public = not new_list_public
-        updated_list = self.client.update_list(new_list_id, new_list_revision, title=updated_title, public=updated_public)
+        code, updated_list = self.client.update_list(new_list_id, new_list_revision, title=updated_title, public=updated_public)
+        self.assertEqual(code, 200)
         self.assertEqual(updated_public, updated_list[wunderpy2.model.List.PUBLIC])
         self.assertEqual(updated_title, updated_list[wunderpy2.model.List.TITLE])
 
@@ -70,7 +74,7 @@ class TestListsEndpoint(EndpointTestCase):
         new_list = self._get_test_list()
         new_list_id = new_list[wunderpy2.model.List.ID]
         new_list_revision = new_list[wunderpy2.model.List.REVISION]
-        self.client.delete_list(new_list_id, new_list_revision)
+        code = self.client.delete_list(new_list_id, new_list_revision)
         self.assertRaises(ValueError, self.client.get_list, new_list_id)
 
 if __name__ == "__main__":

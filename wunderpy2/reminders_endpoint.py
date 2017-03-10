@@ -11,7 +11,7 @@ def get_reminders(client, task_id=None, list_id=None):
 		data["list_id"] = list_id
 
 	response = client.authenticated_request(client.api.Endpoints.REMINDERS, data=data)
-	return response.json()
+	return response.status_code, response.json()
 
 
 def create_reminders(client, task_id, date, created_by_device_udid=None):
@@ -27,7 +27,7 @@ def create_reminders(client, task_id, date, created_by_device_udid=None):
 	if created_by_device_udid is not None:
 		data["created_by_device_udid"] = created_by_device_udid
 	response = client.authenticated_request(client.api.Endpoints.REMINDERS, method="POST", data=data)
-	return response.json()
+	return response.status_code, response.json()
 
 
 def update_reminder(client, reminder_id, date, revision):
@@ -41,11 +41,12 @@ def update_reminder(client, reminder_id, date, revision):
             }
     endpoint = '/'.join([client.api.Endpoints.REMINDERS, str(reminder_id)])
     response = client.authenticated_request(endpoint, 'PATCH', data=data)
-    return response.json()
+    return response.status_code, response.json()
 
 def delete_reminder(client, reminder_id, revision):
     params = {
             'revision' : int(revision),
             }
     endpoint = '/'.join([client.api.Endpoints.REMINDERS, str(reminder_id)])
-    client.authenticated_request(endpoint, 'DELETE', params=params)
+    response = client.authenticated_request(endpoint, 'DELETE', params=params)
+    return response.status_code

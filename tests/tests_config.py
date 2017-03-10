@@ -17,6 +17,8 @@ _endpoint_tests_obj = _config_obj["endpoint_tests"]
 _tasks_config_obj = _endpoint_tests_obj["tasks"]
 class TasksEndpointCfgValues:
     LIST_ID = _tasks_config_obj["list_id"]
+    LIST_ID_NONEXIST = _tasks_config_obj["list_id_nonexist"]
+    TASK_ID = _tasks_config_obj["task_id"]
 
 # lists
 _lists_config_obj = _endpoint_tests_obj["lists"]

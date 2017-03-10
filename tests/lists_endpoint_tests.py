@@ -21,7 +21,7 @@ class TestListsEndpoint(EndpointTestCase):
         for list_id in self._list_ids_to_cleanup:
             try:
                 list_obj = self.client.get_list(list_id)
-                revision = list_obj[wunderpy2.model.List.revision]
+                revision = list_obj[wunderpy2.model.List.REVISION]
                 self.client.delete_list(list_id, revision)
             except ValueError:
                 # There was an issue retrieving or deleting the list; it might be deleted already and we've done the best we can
@@ -33,7 +33,7 @@ class TestListsEndpoint(EndpointTestCase):
         # TODO It's not ideal that this depends on the 'create_list' function which is getting testsed, but the alternative is to re-implement list-creating logic,
         #  which is very fragile in case any of the Wunderlist stuff changes
         new_list = self.client.create_list(random_title)
-        self._list_ids_to_cleanup.add(new_list[wunderpy2.model.List.id])
+        self._list_ids_to_cleanup.add(new_list[wunderpy2.model.List.ID])
         return new_list
 
     def test_get_lists(self):
@@ -43,33 +43,33 @@ class TestListsEndpoint(EndpointTestCase):
     def test_get_list(self):
         ''' Test getting of a specific list '''
         new_list = self._get_test_list()
-        new_list_id = new_list[wunderpy2.model.List.id]
+        new_list_id = new_list[wunderpy2.model.List.ID]
         retrieved_list = self.client.get_list(new_list_id)
         self.assertDictEqual(new_list, retrieved_list)
 
     def test_create_list(self):
         ''' Test list creation '''
         new_list = self.client.create_list("PLZ_DELETE")
-        self._list_ids_to_cleanup.add(new_list[wunderpy2.model.List.id])
+        self._list_ids_to_cleanup.add(new_list[wunderpy2.model.List.ID])
 
     def test_update_list(self):
         ''' Test updating list '''
         new_list = self._get_test_list()
-        new_list_id = new_list[wunderpy2.model.List.id]
-        new_list_revision = new_list[wunderpy2.model.List.revision]
-        new_list_public = new_list[wunderpy2.model.List.public]
+        new_list_id = new_list[wunderpy2.model.List.ID]
+        new_list_revision = new_list[wunderpy2.model.List.REVISION]
+        new_list_public = new_list[wunderpy2.model.List.PUBLIC]
 
         updated_title = "DELETEME!"
         updated_public = not new_list_public
         updated_list = self.client.update_list(new_list_id, new_list_revision, title=updated_title, public=updated_public)
-        self.assertEqual(updated_public, updated_list[wunderpy2.model.List.public])
-        self.assertEqual(updated_title, updated_list[wunderpy2.model.List.title])
+        self.assertEqual(updated_public, updated_list[wunderpy2.model.List.PUBLIC])
+        self.assertEqual(updated_title, updated_list[wunderpy2.model.List.TITLE])
 
     def test_delete_list(self):
         ''' Test list deletion '''
         new_list = self._get_test_list()
-        new_list_id = new_list[wunderpy2.model.List.id]
-        new_list_revision = new_list[wunderpy2.model.List.revision]
+        new_list_id = new_list[wunderpy2.model.List.ID]
+        new_list_revision = new_list[wunderpy2.model.List.REVISION]
         self.client.delete_list(new_list_id, new_list_revision)
         self.assertRaises(ValueError, self.client.get_list, new_list_id)
 

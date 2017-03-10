@@ -59,5 +59,4 @@ TODO
     * Reminder
     * Task comment
     * Upload
-    * User
     * Webhooks?

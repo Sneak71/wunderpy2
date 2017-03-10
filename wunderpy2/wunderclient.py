@@ -3,13 +3,15 @@ import sys
 import json
 
 from . import model as wp_model
+from . import avatar_endpoint
 from . import lists_endpoint
 from . import tasks_endpoint
 from . import notes_endpoint
 from . import subtasks_endpoint
 from . import positions_endpoints
+from . import user_endpoint
 
-class WunderClient:
+class WunderClient(object):
     # TODO Factor our these methods into subclasses, for easier logical organization
     ''' Client for accessing the Wunderlist info of a user (given by the access token) '''
 
@@ -43,6 +45,10 @@ class WunderClient:
                 'X-Client-ID' : self.client_id
                 }
         return self.api.request(endpoint, method=method, headers=headers, params=params, data=data)
+
+    def get_avatar(self, user_id, size=None, fallback=True, save_path=".", avatar_name="avatar.png"):
+        '''Get the avatar of a specific user'''
+        return avatar_endpoint.get_avatar(self, user_id, size, fallback, save_path, avatar_name)
 
     def get_lists(self):
         ''' Gets all the user's lists '''
@@ -271,3 +277,8 @@ class WunderClient:
         '''
         return positions_endpoints.update_subtask_positions_obj(self, positions_obj_id, revision, values)
 
+    def get_user(self):
+        ''' 
+        Gets information about the note with the given ID
+        '''
+        return user_endpoint.get_user(self)

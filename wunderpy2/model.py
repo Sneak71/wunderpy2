@@ -67,3 +67,12 @@ class ReccurrenceTypes():
     WEEK = 'week'
     MONTH = 'month'
     YEAR= 'year'
+
+class User(_WunderlistObj):
+    ''' POPO to contain user JSON keys '''
+    NAME = "name"
+    CREATION_TIMESTAMP = "created_at"
+    UPDATE_TIMESTAMP = "updated_at"
+    TYPE = "type" # Always 'user'?
+    EMAIL = "email"
+

@@ -16,13 +16,24 @@ class WunderApi:
         # All these can (and likely will) change based on API version in the future
         if api_version:
             class _Endpoints: 
-                TASKS = "tasks"
+                AVATAR = "avatar"
+                FILES = "files"
+                PREVIEWS = "previews"
+                FOLDERS = "folders"                
                 LISTS = "lists"
+                MEMBERSHIPS = "memberships"
                 NOTES = "notes"
-                SUBTASKS = "subtasks"
                 LIST_POSITIONS = "list_positions"
                 TASK_POSITIONS = "task_positions"
                 SUBTASK_POSITIONS = "subtask_positions"
+                REMINDERS = "reminders"
+                ROOT = "root"
+                SUBTASKS = "subtasks"
+                TASKS = "tasks"
+                TASK_COMMENTS = "task_comments"
+                UPLOAD = "uploads"
+                USER = "user"
+                WEBHOOKS = "webhooks"
 
             self.DATE_FORMAT = '%Y-%m-%d'
             self.DATETIME_FORMAT = '%Y-%m-%dT%H:%M:%SZ'

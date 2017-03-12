@@ -40,6 +40,8 @@ class WunderApi:
             self.MAX_TASK_TITLE_LENGTH = 255
             self.MAX_LIST_TITLE_LENGTH = 255
             self.MAX_SUBTASK_TITLE_LENGTH = 255
+            self.MAX_WEBHOOK_URL_LENGTH = 255
+            self.MAX_FOLDER_TITLE_LENGTH = 255
         self.Endpoints = _Endpoints
 
     def _validate_response(self, method, response):

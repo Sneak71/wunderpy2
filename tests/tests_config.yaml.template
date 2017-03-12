@@ -7,3 +7,21 @@ access_token:
 
 # TODO It'd be nice to have a generator that you point at a Wunderlist instance and it automagically fills all this crap in
 inbox_id: 
+
+endpoint_tests:
+	# tasks related
+	tasks:
+		list_id:
+		list_id_nonexist:
+		task_id:
+
+	# lists related
+	lists:
+		list_id:
+
+	# notes related
+	notes:
+		list_id:
+		task_id_with_notes:
+		task_id_without_notes:
+		note_id:

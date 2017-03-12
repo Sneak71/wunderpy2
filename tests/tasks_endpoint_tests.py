@@ -1,6 +1,7 @@
 import unittest
 import random
 import string
+import wunderpy2
 
 import tests_config
 from endpoint_test_case import EndpointTestCase
@@ -9,7 +10,7 @@ from endpoint_test_case import EndpointTestCase
 class TestTasksEndpoint(EndpointTestCase):
     def setUp(self):
         ''' Does normal endpoint setup and also sets up tracking of any tasks that were created during the course of testing '''
-        super(TestListsEndpoint, self).setUp()
+        super(TestTasksEndpoint, self).setUp()
         self._tasks_ids_to_cleanup = set()
 
     def tearDown(self):
@@ -27,13 +28,13 @@ class TestTasksEndpoint(EndpointTestCase):
         random_title = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(10))
         # TODO It's not ideal that this depends on the 'create_task' function which is getting testsed, but the alternative is to re-implement task-creating logic,
         #  which is very fragile in case any of the Wunderlist stuff changes
-        code, new_task = self.client.create_task(random_title)
+        code, new_task = self.client.create_task(tests_config.TasksEndpointCfgValues.LIST_ID, random_title)
         assert code == 201
-        self._task_ids_to_cleanup.add(new_ask[wunderpy2.model.Task.ID])
+        self._tasks_ids_to_cleanup.add(new_task[wunderpy2.model.Task.ID])
         return new_task
 
     def test_get_tasks(self):
-        code, _ = self.client.get_tasks(tests_config.TasksEndpointCfgValues.LIST_ID)
+        code, resp = self.client.get_tasks(tests_config.TasksEndpointCfgValues.LIST_ID)
         self.assertEqual(code, 200)
 
     def test_get_completed_tasks(self):
@@ -55,29 +56,80 @@ class TestTasksEndpoint(EndpointTestCase):
         self.assertEqual(code, 201)
         self._tasks_ids_to_cleanup.add(new_task[wunderpy2.model.Task.ID])
 
-'''
-# TODO Try creating a task with too long of a title
+    # Try creating a task with too long of a title
+    def test_create_task_with_invalid_title(self):
+        title = 'TEST' * 70
+        code, new_task = self.client.create_task(tests_config.TasksEndpointCfgValues.LIST_ID, title=title)
+        self.assertRaises(ValueError, lambda _: print "value error")
 
-print "Updating task..."
-updated_task = client.update_task(created_task[wunderpy2.Task.id], created_task[wunderpy2.Task.revision], title="New title")
+    # Updating task...
+    def test_update_task(self):
+        task = self._get_test_task()
+        code, resp = self.client.update_task(
+                task[wunderpy2.model.Task.ID],
+                task[wunderpy2.model.Task.REVISION],
+                title = "UPDATE TASK"
+            )
+        self.assertEqual(code, 200)
 
-# TODO Try updating a task with known out-of-date revision
-# TODO Try updating a non-existent task ID
-# TODO Try updating a task with too long a title
-# TODO Try removing some properties from a task
+    # updating a task with known out-of-date revision
+    def test_update_task_outdate_revision(self):
+        task = self._get_test_task()
+        code, resp = self.client.update_task(
+                task[wunderpy2.model.Task.ID],
+                -1,
+                title = "UPDATE TASK"
+            )
+        self.assertEqual(code, 409)
+        self.assertRaises(ValueError, self.client.get_task(), task[wunderpy2.model.Task.ID])
 
-print "Deleting task..."
-client.delete_task(updated_task[wunderpy2.Task.id], updated_task[wunderpy2.Task.revision])
-print "Deleting already-deleted task..."
-# This should fail with a 404
-try:
-    client.delete_task(updated_task[wunderpy2.Task.id], updated_task[wunderpy2.Task.revision])
-except ValueError:
-    print "Caught ValueError as expected"
-    pass
+    # Try updating a non-existent task ID
+    def test_update_nonexist_task(self):
+        code, resp = self.client.update_task(123, 1, "NOEXIST TASK")
+        self.assertEqual(code, 404)
+        self.assertRaises(ValueError, lambda _:print "valueerror")
 
-# TODO Try deleting a task with out-of-date revision
-'''
+    # Try updating a task with too long a title
+    def test_update_task_with_invalid_title(self):
+        title = "test"*70
+        task = self._get_test_task()
+        code, resp = self.client.update_task(
+                task[wunderpy2.model.Task.ID],
+                task[wunderpy2.model.Task.REVISION],
+                title = title
+            )
+        self.assertRaises(ValueError, self.client.get_task, task[wunderpy2.model.Task.ID])
+
+    # Try removing some properties from a task
+    def test_update_task_with_remove_attr(self):
+        task = self._get_test_task()
+        code, resp = self.client.update_task(
+                task[wunderpy2.model.Task.ID],
+                task[wunderpy2.model.Task.REVISION],
+                remove = ["due_date"]
+            )
+        self.assertEqual(code, 200)
+
+    # Deleting task...
+    def test_delete_task(self):
+        task = self._get_test_task()
+        code, resp = self.client.delete_task(
+                task[wunderpy2.model.Task.ID],
+                task[wunderpy2.model.Task.REVISION]
+            )
+        self.assertEqual(code, 204)
+
+
+    # Try deleting a task with out-of-date revision
+    def test_delete_task(self):
+        task = self._get_test_task()
+        code, resp = self.client.delete_task(
+                task[wunderpy2.model.Task.ID],
+                -1
+            )
+        self.assertEqual(code, 409)
+        self.assertRaises(ValueError, self.client.get_task, task[wunderpy2.model.Task.ID])
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -85,3 +85,11 @@ class User(_WunderlistObj):
     TYPE = "type" # Always 'user'?
     EMAIL = "email"
 
+class Webhooks(_WunderlistObj):
+    LIST_ID = "list_id"
+    MEMBERSHIP_ID = "membership_id"
+    MEMBERSHIP_TYPE = "membership_type"
+    URL = "url"
+    PROCESSOR_TYPE = "processor_type"
+    CONFIGURATIN = "configuration"
+    UPDATE_TIMESTAMP = "updated_at"

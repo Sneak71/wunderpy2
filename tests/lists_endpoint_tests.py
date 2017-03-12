@@ -39,7 +39,8 @@ class TestListsEndpoint(EndpointTestCase):
 
     def test_get_lists(self):
         ''' Test basic all lists retrieval '''
-        code, _ = self.client.get_lists()
+        code, resp = self.client.get_lists()
+        #print resp
         self.assertEqual(code, 200)
 
     def test_get_list(self):
